@@ -44,37 +44,28 @@ let parseString = json => {
   String_(s);
 };
 
-let parseValue = json =>
+let parsePair = json : pair => {
+  switch(json)
+};
+
+let parseMembers = json : members =>
   switch (json) {
-  | [] => None
+  | [] =>
+    Js.log("Empty Member?!");
+    Pair(("error", String_("error")));
   | [head, ...tail] =>
     switch (head) {
-    | '"' => Some(tail |> parseString)
-    /* | '{' => tail |> parseObject */
+    | '"' => {}
     | _ =>
-      Js.log("Error parsing value!");
-      None;
+      Js.log("Error parsing object!");
+      Pair(("error", String_("error")));
     }
   };
 
-let execute = () => myString |> explode |> parseValue |> Js.log;
-/* let parseMembers = json : members =>
+let parseObject = json : object_ =>
    switch (json) {
    | [] =>
-     Js.log("Empty?!");
-     Pair(("error", String_("error")));
-   | [head, ...tail] =>
-     switch (head) {
-     | '"' => {}
-     | _ =>
-       Js.log("Error parsing object!");
-       Pair(("error", String_("error")));
-     }
-   }; */
-/* let parseObject = json : object_ =>
-   switch (json) {
-   | [] =>
-     Js.log("Empty?!");
+     Js.log("Empty Object?!");
      EmptyObject;
    | [head, ...tail] =>
      switch (head) {
@@ -82,6 +73,17 @@ let execute = () => myString |> explode |> parseValue |> Js.log;
      | _ => parseMembers(tail)
    };
 
+let parseValue = json =>
+  switch (json) {
+  | [] => None
+  | [head, ...tail] =>
+    switch (head) {
+    | '"' => Some(tail |> parseString)
+    | '{' => tail |> parseObject
+    | c =>
+      Js.log("Invalid beginning character '" ++ String.make(1, c) ++ "' for value!");
+      None;
+    }
+  };
 
-
-   myJson |> explode |> parseValue |> Js.log; */
+let execute = () => myString |> explode |> parseValue |> Js.log;
