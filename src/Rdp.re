@@ -9,9 +9,13 @@ and members =
   | Pair(pair)
   | PairAndMembers(pair, members);
 
-let myJson = "{\"hello\":\"world\"}";
+let simpleString = "\"hello\"";
 
-let myString = "\"hello\"";
+let simpleJson = "{\"hello\":\"world\"}";
+
+let multipleJson = "{\"a\":\"b\",\"c\":\"d\"}";
+
+let nestedJson = "{\"a\":{\"b\":\"c\"}}";
 
 let explode = (s: string) : list(char) => {
   let rec aux = (str: string) =>
@@ -137,7 +141,30 @@ and parseObject = json =>
     }
   };
 
-let execute = () => {
-  let v = myJson |> explode |> parseValue;
-  v |> Js.log;
+let rec prettyValue = v => {
+  let prettyPair = p => {
+    let (key, value) = p;
+    "Pair(" ++ key ++ " => " ++ prettyValue(value) ++ ")";
+  };
+  let rec prettyMembers = ms =>
+    switch (ms) {
+    | Pair(p) => prettyPair(p)
+    | PairAndMembers(p, ms) =>
+      "PairAndMembers(" ++ prettyPair(p) ++ ", " ++ prettyMembers(ms) ++ ")"
+    };
+  switch (v) {
+  | Object_(o) =>
+    switch (o) {
+    | EmptyObject => "Object({})"
+    | ObjectWithMembers(ms) => "Object(" ++ prettyMembers(ms) ++ ")"
+    }
+  | String_(s) => "String(" ++ s ++ ")"
+  };
+};
+
+let execute = s => {
+  Js.log2("Attempting to parse: ", s);
+  let (v, remainder) = s |> explode |> parseValue;
+  v |> prettyValue |> Js.log;
+  Js.log2("Remainder:", remainder |> implode);
 };

@@ -6,7 +6,13 @@ let component = ReasonReact.statelessComponent("App");
 
 let str = ReasonReact.stringToElement;
 
-Rdp.execute();
+Rdp.execute(Rdp.simpleString);
+
+Rdp.execute(Rdp.simpleJson);
+
+Rdp.execute(Rdp.multipleJson);
+
+Rdp.execute(Rdp.nestedJson);
 
 let make = (~message, _children) => {
   ...component,
@@ -17,9 +23,11 @@ let make = (~message, _children) => {
         <h2> (str(message)) </h2>
       </div>
       <p className="App-intro">
-        (str("To get started, edit"))
-        <code> (str(" src/app.re ")) </code>
-        (str("and save to reload."))
+        (
+          str(
+            "Check the console to see output from the recursive descent parser.",
+          )
+        )
       </p>
     </div>,
 };
